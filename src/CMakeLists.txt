@@ -2,9 +2,6 @@ cmake_minimum_required(VERSION 3.0)
 
 set (CMAKE_CXX_STANDARD 11)
 
-set (VERSION_MAJOR 1)
-set (VERSION_MINOR 0)
-
 set(BOOST_ROOT "/usr/local/Cellar/boost/1.74.0")
 set(Boost_USE_STATIC_LIBS        ON)  # only find static libs
 set(Boost_USE_DEBUG_LIBS         OFF) # ignore debug libs and
