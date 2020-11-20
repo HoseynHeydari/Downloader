@@ -2,18 +2,19 @@
 #define DOWNLOADER_H_
 
 #include <string>
-#include <fstream>
 
 #include <boost/asio.hpp>
+
+#include "Writer.h"
 
 class Downloader
 {
 public:
-	explicit Downloader(const std::string& target_url,
+	Downloader(const std::string& target_url,
 			const std::string& protocol,
 			const std::string& file_name);
 
-	~Downloader();
+	~Downloader() = default;
 
 	void write();
 	void write(const std::string& target_url);
@@ -25,9 +26,8 @@ private:
 	const std::string target_url;
 	const std::string protocol;
 	boost::asio::ip::tcp::iostream reader;
-	std::fstream writer;
+	Writer my_writer;
 };
-
 
 Downloader::Downloader(const std::string& url,
 		const std::string& protocol_type,
@@ -35,9 +35,8 @@ Downloader::Downloader(const std::string& url,
 : target_url(url)
 , protocol(protocol_type)
 , reader(target_url, protocol)
+, my_writer(file_name)
 {
-	writer.open(file_name,
-			std::fstream::in | std::fstream::out | std::fstream::app);
 }
 
 void Downloader::write()
@@ -46,13 +45,7 @@ void Downloader::write()
 	reader << "Host: " + target_url + "\r\n";
 	close_connection();
 	accept_all();
-	reader.flush();
-	writer << reader.rdbuf();
-}
-
-Downloader::~Downloader()
-{
-	writer.close();
+	my_writer.write(reader);
 }
 
 void Downloader::get_http()
@@ -64,6 +57,7 @@ void Downloader::accept_all()
 {
 	reader << "Accept: */*\r\n";
 }
+
 void Downloader::close_connection()
 {
 	reader << "Connection: close\r\n\r\n";
