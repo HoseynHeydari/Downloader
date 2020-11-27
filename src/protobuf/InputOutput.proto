@@ -1,0 +1,19 @@
+syntax = "proto2";
+
+package resource;
+
+enum Protocol
+{
+    HTTP = 0;
+}
+
+message Url
+{
+    optional string target_url = 1;
+    optional Protocol protocol = 2;
+}
+
+message Urls
+{
+    repeated Url url = 100;
+}
