@@ -9,9 +9,11 @@
 class Writer
 {
 public:
-	explicit Writer(const std::string& file_name);
-	~Writer();
-	void write(boost::asio::ip::tcp::iostream& content_stream);
+	inline explicit Writer(const std::string& file_name);
+	Writer(const Writer& other) = delete;
+	Writer(Writer&& other) = delete;
+	inline ~Writer();
+	inline void write(boost::asio::ip::tcp::iostream& content_stream);
 private:
 	std::fstream writer;
 };

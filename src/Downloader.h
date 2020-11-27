@@ -5,23 +5,26 @@
 
 #include <boost/asio.hpp>
 
+#include "Configure.h"
 #include "Writer.h"
 
 class Downloader
 {
 public:
-	Downloader(const std::string& target_url,
+	inline Downloader(const std::string& target_url,
 			const std::string& protocol,
-			const std::string& file_name);
+			std::string&& file_name);
+	inline Downloader(const Configure& configure);
+	Downloader(Downloader&& other) = delete;
+	Downloader(const Downloader& other) = delete;
 
 	~Downloader() = default;
 
-	void write();
-	void write(const std::string& target_url);
+	inline void write();
 private:
-	void get_http();
-	void accept_all();
-	void close_connection();
+	inline void get_http();
+	inline void accept_all();
+	inline void close_connection();
 
 	const std::string target_url;
 	const std::string protocol;
@@ -31,11 +34,19 @@ private:
 
 Downloader::Downloader(const std::string& url,
 		const std::string& protocol_type,
-		const std::string& file_name)
+		std::string&& file_name)
 : target_url(url)
 , protocol(protocol_type)
 , reader(target_url, protocol)
 , my_writer(file_name)
+{
+}
+
+Downloader::Downloader(const Configure& configure)
+: target_url(configure.get_url())
+, protocol(configure.get_protocol())
+, reader(configure.get_url(), configure.get_protocol())
+, my_writer(configure.get_output_name())
 {
 }
 

@@ -87,5 +87,8 @@
         "editor.tabSize": 4,
         "editor.autoIndent": "advanced"
     },
-    "terminal.integrated.shell.osx": "/bin/zsh"
+    "terminal.integrated.shell.osx": "/bin/zsh",
+    "output.smartScroll.enabled": false,
+    "C_Cpp.default.cppStandard": "c++11",
+    "C_Cpp.default.cStandard": "c11"
 }
