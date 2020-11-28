@@ -4,16 +4,16 @@
 #include <string>
 #include <fstream>
 
-#include <boost/asio.hpp>
-
 class Writer
 {
 public:
 	inline explicit Writer(const std::string& file_name);
+	inline explicit Writer(const Configure& configure);
 	Writer(const Writer& other) = delete;
-	Writer(Writer&& other) = delete;
-	inline ~Writer();
-	inline void write(boost::asio::ip::tcp::iostream& content_stream);
+	Writer(Writer&& other) = default;
+	virtual inline ~Writer();
+
+	virtual inline void write(std::streambuf* stream_buffer);
 private:
 	std::fstream writer;
 };
@@ -24,10 +24,15 @@ Writer::Writer(const std::string& file_name)
 			std::fstream::in | std::fstream::out | std::fstream::app);
 }
 
-void Writer::write(boost::asio::ip::tcp::iostream& content_stream)
+Writer::Writer(const Configure& configure)
 {
-	content_stream.flush();
-	writer << content_stream.rdbuf();
+	writer.open(configure.get_output_name(),
+			std::fstream::in | std::fstream::out | std::fstream::app);
+}
+
+void Writer::write(std::streambuf* stream_buffer)
+{
+	writer << stream_buffer;
 }
 
 Writer::~Writer()
